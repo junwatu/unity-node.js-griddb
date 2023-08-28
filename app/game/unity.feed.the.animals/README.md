@@ -4,4 +4,4 @@ Game Prototype
 
 ---
 
-Equan Pr.(c) 2020
+Equan Pr.(c) 2023
