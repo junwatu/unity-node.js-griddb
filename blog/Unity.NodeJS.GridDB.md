@@ -1,9 +1,8 @@
-# Unity, Node.js, and GridDB: Real-time Game Progress Synchronization
+# Save Game Data Using Node.js and GridDB
 
 ## Introduction
 
-In this post we will build a simple game called **Feed The Animals**. The gameplay is simple, that is feed the animal and if you have failed to feed a few animals then you will loose, means game over!.
-
+In this post we will build a simple game called **Feed The Animals**. The gameplay is simple, that is feed the animal and if you have failed to feed a few animals then you will loose, means game over!
 
 ![game-screenshot](images/game-screenshot.png)
 
