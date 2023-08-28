@@ -14,4 +14,4 @@ We will build a simple game using [Unity](https://unity.com/) game engine with t
 
 - **GridDB:** In the real-time game progress, storage plays the silent yet indispensable role of the custodian. Enter GridDB, a database system designed with the rigors of real-time data storage in mind. What makes GridDB stand out is its emphasis on scalability, high availability, and durability. For games, where every millisecond of progress is precious, GridDB's ability to efficiently store and retrieve data with low latency makes it a worthy contender. Its architecture, tailored for IoT use-cases, translates well into the gaming domain, ensuring that every jump, shoot, or save by a player is captured and stored without a hiccup.
 
-
+## 
