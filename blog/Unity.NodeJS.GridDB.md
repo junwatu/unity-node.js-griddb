@@ -24,9 +24,7 @@ Before running the game, run the gamne server first. Go to project source code a
 npm run start
 ```
 
-The default host and port setting for the server is in the `.env` file. Please change it if you want to run the server on another IP address and port.
-
-For example, to run the game server on IP `192.168.0.11` and the port is `9000`. Open `.env` file and edit `GAME_SERVER` variable.
+The default host and port setting for the server is in the `.env` file. Please change it if you want to run the server on another IP address and port. For example, to run the game server on IP `192.168.0.11` and the port is `9000`. Open `.env` file and edit `GAME_SERVER` variable.
 
 ```sh
 GAME_SERVER=http://192.168.0.11:9000
@@ -46,9 +44,7 @@ There will be a game setting configuration window. You can choose other  **Scree
 
 ## **The Building Blocks: Unity, Node.js, and GridDB**
 
-As players interact with a game, every action, decision, and change in game state is valuable data. Accurately and promptly saving this data is pivotal for seamless gameplay, particularly in multiplayer scenarios or games that require consistent syncing.
-
-We will build the game using **Unity** game engine and the backend stack **Node.js**, and **GridDB** database. Let's unravel the significance of each:
+Accurately and promptly saving every action, decision, and game state is crucial for seamless gameplay, especially in multiplayer scenarios or games requiring consistent syncing. We will build the game using **Unity** game engine with the backend stack **Node.js**, and **GridDB** database. Let's examine the importance of each:
 
 ### [**Unity**](https://unity.com/)
 
@@ -62,4 +58,46 @@ Node.js allows developers to create efficient and scalable backend services usin
 
 In real-time gaming, efficient data storage is crucial. GridDB is a highly scalable, available, and durable database system designed for this purpose. Its architecture is tailored for IoT use-cases, translating well into gaming, ensuring every player action is captured and stored with low latency.
 
-## 
+## Installation
+
+### Setting up Node.js
+
+The project discussed in this blog post utilizes Node.js LTS version 18, and it is recommended that you have the same version installed. To check if you have Node.js installed, run the following command:
+
+```
+node --version
+```
+
+If Node.js is not installed or you have an older version, it is recommended to upgrade or install Node.js LTS from their official website [nodejs.org](https://nodejs.org/en/download).
+
+### Setting up GridDB
+
+GridDB is easy to setup. Please go to this [link](https://docs.griddb.net/latest/gettingstarted/using-apt/) for fresh installation on ubuntu or [here](https://docs.griddb.net/latest/gettingstarted/wsl/) to install it on Windows via WSL (Windows Subsystem Linux).
+
+If you alreaady have it in your system, check if the griddb service is running with this commmand
+
+```
+sudo systemctl status gridstore
+```
+
+This Ubuntu OS command line output shows the griddb service is running:
+
+```shell
+● gridstore.service - GridDB database server.
+     Loaded: loaded (/lib/systemd/system/gridstore.service; enabled; vendor preset: enabled)
+     Active: active (running) since Tue 2023-07-04 04:47:12 +07; 9h ago
+   Main PID: 575 (gsserver)
+      Tasks: 34 (limit: 7017)
+     Memory: 144.7M
+     CGroup: /system.slice/gridstore.service
+             └─575 /usr/bin/gsserver --conf /var/lib/gridstore/conf
+
+Jul 04 04:47:08 GenAI systemd[1]: Starting GridDB database server....
+Jul 04 04:47:09 GenAI gridstore[381]: Starting gridstore service:
+Jul 04 04:47:12 GenAI gridstore[526]: ..
+Jul 04 04:47:12 GenAI gridstore[526]: Started node.
+Jul 04 04:47:12 GenAI gridstore[381]: [ OK ]
+Jul 04 04:47:12 GenAI systemd[1]: Started GridDB database server..
+```
+
+
