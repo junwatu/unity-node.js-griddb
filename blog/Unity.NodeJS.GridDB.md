@@ -121,3 +121,6 @@ After installed you can import the game project source code and assets in in the
 
 ![Unity Hub open project](images/unity-hub-open.png)
 
+After that you can open the game project source and assets in the Unity Editor
+
+![Unity editor](images/unity-editor.png)
