@@ -2,13 +2,32 @@
 
 ## Introduction
 
-In this post we will build a simple game called **Feed The Animals**. This game is using Node.js as a backend server and using GridDB database as storage. 
+In this post we will build a simple game called **Feed The Animals**. This game is using Node.js as a backend server and using GridDB database as storage.
 
 ## Run the Project
 
+Clone the project [source code](https://github.com/junwatu/unity-node.js-griddb) from the GitHub repository. 
+
+```shell
+git clone https://github.com/junwatu/unity-node.js-griddb.git
+```
+
+change the directory into the project source code
+
+```shell
+cd unity-node.js-griddb
+```
+
+Install the Node.js server dependencies
+
+```shell
+cd app\server
+npm install
+```
+
 ### Game Server
 
-Before running the game, run the gamne server first. Go to project source code and folder  `app\server` and run in the terminal
+Before running the game, you should run the game server first. Please, go to the project source code and folder  `app\server` if you haven't and run the following command in the terminal:
 
 ```sh
 npm run start
@@ -64,7 +83,7 @@ In real-time gaming, efficient data storage is crucial. GridDB is a highly scala
 
 ### **WebSocket: Bridging Unity and Node.js in Real-time**
 
-In the fast-paced world of gaming, where every move and second is critical, traditional request-response communication models may not be sufficient. This is where the power of WebSocket comes in.
+In the fast-paced world of gaming, where every move and second is critical, traditional request-response communication models may not be sufficient. This is where the power of [WebSocket](https://en.wikipedia.org/wiki/WebSocket) comes in.
 
 - **Basics of WebSocket:** WebSocket offer a different approach to the traditional HTTP model. Rather than waiting for a response after sending a request, WebSocket create a full-duplex communication channel over one long-lasting connection. This enables simultaneous sending and receiving of data without the need to constantly reconnect. The connection is established through an HTTP connection handshake, which is then upgraded for use with WebSocket. This consistent and uninterrupted connection is perfect for applications that require real-time feedback, as data transfer is instantaneous.
 
@@ -135,12 +154,25 @@ You have to install **Unity 2022.3.6f1** directly from Unity Hub for better proj
 
 ![Unity Hub](images/unity-hub.png)
 
-After installed you can import the game project source code and assets in in the folder `app\game\unity.feed.the.animals`
+After installed you can import the game project source code and assets in in the folder:
+
+ ```shell
+ app\game\unity.feed.the.animals
+ ```
 
 ![Unity Hub open project](images/unity-hub-open.png)
 
-After that you can open the game project source and assets in the Unity Editor
+After that you can open the game project source and assets in the Unity Editor.
 
 ![Unity editor](images/unity-editor.png)
 
+## Project Codes
+
+### Node.js and WebSocket Integration
+
+[DRAFT]
+
+### Unity Meets WebSocket
+
+[DRAFT]
 
