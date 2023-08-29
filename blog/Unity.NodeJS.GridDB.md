@@ -2,17 +2,7 @@
 
 ## Introduction
 
-In this post we will build a simple game called **Feed The Animals**. The gameplay is simple, that is feed the animal and if you have failed to feed a few animals then you will loose, means game over!
-
-![game-screenshot](images/game-screenshot.png)
-
-This game only have three keys function:
-
-| Control Key  | Action                                |
-|-------------|---------------------------------------|
-| **Left Arrow** or **A** | For the left movement.             |
-| **Right Arrow** or **D** | For the right movement.           |
-| **Space Bar**   | For throwing a food to the animal.    |
+In this post we will build a simple game called **Feed The Animals**. This game is using Node.js as a backend server and using GridDB database as storage. 
 
 ## Run the Project
 
@@ -41,6 +31,18 @@ This game build is running on the Windows OS machine. Go to the project source a
 There will be a game setting configuration window. You can choose other  **Screen resolution** and the **Graphics quality** or leave as it is.
 
 ![game settings start](images/game-start-setting.png)
+
+The gameplay is simple, that is feed the animal and if you have failed to feed a few animals then you will loose, means game over!
+
+![game-screenshot](images/game-screenshot.png)
+
+This game only have three keys function:
+
+| Control Key  | Action                                |
+|-------------|---------------------------------------|
+| **Left Arrow** or **A** | For the left movement.             |
+| **Right Arrow** or **D** | For the right movement.           |
+| **Space Bar**   | For throwing a food to the animal.    |
 
 ## **The Building Blocks: Unity, Node.js, and GridDB**
 
