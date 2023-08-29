@@ -645,7 +645,7 @@ PrefabInstance:
     - target: {fileID: 1553209420945268384, guid: cfc6c19e1762738438180b8cd19bb2c6,
         type: 3}
       propertyPath: m_Name
-      value: Daging
+      value: Meat
       objectReference: {fileID: 0}
     - target: {fileID: 1553209420945333100, guid: cfc6c19e1762738438180b8cd19bb2c6,
         type: 3}

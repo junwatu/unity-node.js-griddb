@@ -64,7 +64,7 @@ In real-time gaming, efficient data storage is crucial. GridDB is a highly scala
 
 The project discussed in this blog post utilizes Node.js LTS version 18, and it is recommended that you have the same version installed. To check if you have Node.js installed, run the following command:
 
-```
+```bash
 node --version
 ```
 
@@ -76,13 +76,13 @@ GridDB is easy to setup. Please go to this [link](https://docs.griddb.net/latest
 
 If you alreaady have it in your system, check if the griddb service is running with this commmand
 
-```
+```bash
 sudo systemctl status gridstore
 ```
 
 This Ubuntu OS command line output shows the griddb service is running:
 
-```shell
+```bash
 ● gridstore.service - GridDB database server.
      Loaded: loaded (/lib/systemd/system/gridstore.service; enabled; vendor preset: enabled)
      Active: active (running) since Tue 2023-07-04 04:47:12 +07; 9h ago
@@ -100,4 +100,22 @@ Jul 04 04:47:12 GenAI gridstore[381]: [ OK ]
 Jul 04 04:47:12 GenAI systemd[1]: Started GridDB database server..
 ```
 
+### Setting up Unity
+
+In this post we will use Windows OS for the Unity installation.
+
+#### Unity Editor
+
+For this project we will use Unity 2022 LTS and to install it you need to install Unity Hub first. Please go here [Unity Hub](https://public-cdn.cloud.unity3d.com/hub/prod/UnityHubSetup.exe) to install it.
+
+> **What is the Unity Hub?**
+> Use the Unity Hub to manage multiple installations of the Unity Editor, create new projects, and access your work.
+
+You have to install **Unity 2022.3.6f1** directly from Unity Hub for better project management.
+
+![Unity Hub](images/unity-hub.png)
+
+After installed you can import the game project source code and assets in in the folder `app\game\unity.feed.the.animals`
+
+![Unity Hub open project](images/unity-hub-open.png)
 
