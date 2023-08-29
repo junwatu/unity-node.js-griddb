@@ -176,3 +176,13 @@ After that you can open the game project source and assets in the Unity Editor.
 
 [DRAFT]
 
+### Storing Game Progress
+
+[DRAFT]
+
+- Storing and retrieving data from GridDB using Node.js.
+- Summarizing the complete flow from game event in Unity to data storage in GridDB.
+
+## Conclusion
+
+[DRAFT]
