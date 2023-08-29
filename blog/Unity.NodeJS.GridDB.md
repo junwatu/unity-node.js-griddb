@@ -44,7 +44,7 @@ This game only have three keys function:
 | **Right Arrow** or **D** | For the right movement.           |
 | **Space Bar**   | For throwing a food to the animal.    |
 
-## **The Building Blocks: Unity, Node.js, and GridDB**
+## **The Building Blocks: Unity, Node.js, WebSocket, and GridDB**
 
 Accurately and promptly saving every action, decision, and game state is crucial for seamless gameplay, especially in multiplayer scenarios or games requiring consistent syncing. We will build the game using **Unity** game engine with the backend stack **Node.js**, and **GridDB** database. Let's examine the importance of each:
 
@@ -59,6 +59,24 @@ Node.js allows developers to create efficient and scalable backend services usin
 ### [**GridDB**](https://www.griddb.net/)
 
 In real-time gaming, efficient data storage is crucial. GridDB is a highly scalable, available, and durable database system designed for this purpose. Its architecture is tailored for IoT use-cases, translating well into gaming, ensuring every player action is captured and stored with low latency.
+
+
+
+### **WebSocket: Bridging Unity and Node.js in Real-time**
+
+In the fast-paced world of gaming, where every move and second is critical, traditional request-response communication models may not be sufficient. This is where the power of WebSocket comes in.
+
+- **Basics of WebSocket:** WebSocket offer a different approach to the traditional HTTP model. Rather than waiting for a response after sending a request, WebSocket create a full-duplex communication channel over one long-lasting connection. This enables simultaneous sending and receiving of data without the need to constantly reconnect. The connection is established through an HTTP connection handshake, which is then upgraded for use with WebSocket. This consistent and uninterrupted connection is perfect for applications that require real-time feedback, as data transfer is instantaneous.
+
+- **Importance of real-time communication in games:** When it comes to gaming, players want quick responses to their moves. In multiplayer shooter games, communication can determine whether a team wins or loses, and in real-time strategy games, decisions need to be made and executed without delay. To meet these expectations, game developers rely on WebSocket. These tools help minimize delays and ensure that players' actions are synchronized across various platforms and devices. With WebSocket, gamers can enjoy a seamless and engaging experience.
+
+## System Architecture
+
+This project consist of three main stacks as we described earlier: Unity, Node.js, and GridDB database. The system diagram is very simple, we can use Node.js and GridDB as backend server and the communication between  Unity game and the backend server is through WebSocket technology.
+
+![system arch](images/unity-nodejs-griddb.png)
+
+In this project we use two main programming languages one is C# for the game development and the other is JavaScript running on Node.js.
 
 ## Installation
 
@@ -125,15 +143,4 @@ After that you can open the game project source and assets in the Unity Editor
 
 ![Unity editor](images/unity-editor.png)
 
-## **Real-time Communication: An Introduction to WebSockets**
-
-### **WebSockets: Bridging Unity and Node.js in Real-time**
-
-In the fast-paced world of gaming, where every move and second is critical, traditional request-response communication models may not be sufficient. This is where the power of WebSockets comes in.
-
-- **Basics of WebSockets:** WebSockets offer a different approach to the traditional HTTP model. Rather than waiting for a response after sending a request, WebSockets create a full-duplex communication channel over one long-lasting connection. This enables simultaneous sending and receiving of data without the need to constantly reconnect. The connection is established through an HTTP connection handshake, which is then upgraded for use with WebSockets. This consistent and uninterrupted connection is perfect for applications that require real-time feedback, as data transfer is instantaneous.
-
-- **Importance of real-time communication in games:** When it comes to gaming, players want quick responses to their moves. In multiplayer shooter games, communication can determine whether a team wins or loses, and in real-time strategy games, decisions need to be made and executed without delay. To meet these expectations, game developers rely on WebSockets. These tools help minimize delays and ensure that players' actions are synchronized across various platforms and devices. With WebSockets, gamers can enjoy a seamless and engaging experience.
-
-Of course in this blog we only make a necessary WebSocket connection for our simple game.
 
