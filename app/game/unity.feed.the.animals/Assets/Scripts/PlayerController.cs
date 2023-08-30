@@ -9,7 +9,7 @@ public class PlayerController : MonoBehaviour
     public float speed = 10.0f;
     public float xRange = 10.0f;
 
-    public GameObject projectilePrefab;
+    public GameObject[] projectilePrefabs; // Array to hold multiple projectile prefabs
 
     void Start()
     {
@@ -33,8 +33,15 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyDown("space"))
         {
-            //Debug.Log("Space down");
-            Instantiate(projectilePrefab, transform.position, projectilePrefab.transform.rotation);
+            // Pick a random index
+            int randomIndex = Random.Range(0, projectilePrefabs.Length);
+
+            // Pick a projectile prefab using the random index
+            GameObject randomProjectilePrefab = projectilePrefabs[randomIndex];
+
+            // Instantiate the random projectile
+            Instantiate(randomProjectilePrefab, transform.position, randomProjectilePrefab.transform.rotation);
+
             GameManager.Instance.numberOfMeatThrows++;
         }
     }

@@ -22,6 +22,22 @@ public class WsClient : MonoBehaviour
 
 
             ws = new WebSocket(url);
+
+            ws.OnOpen += (sender, e) =>
+                   {
+                       UpdateConnectionStatus("Connected", url);
+                   };
+
+            ws.OnClose += (sender, e) =>
+            {
+                UpdateConnectionStatus("Disconnected", "");
+            };
+
+            ws.OnError += (sender, e) =>
+            {
+                UpdateConnectionStatus("Error: " + e.Message, "");
+            };
+
             ws.Connect();
 
             ws.OnMessage += (sender, e) =>
@@ -55,11 +71,19 @@ public class WsClient : MonoBehaviour
             // Add other game data here (like number of thrown meat, last collided animal, etc.)
             // Add other game data here
             dataToSave.Add("NumberOfMeatThrows", GameManager.Instance.numberOfMeatThrows);
-
+            dataToSave.Add("type", "save");
 
             // Convert dictionary to JSON and send it
             string json = JsonConvert.SerializeObject(dataToSave);
             ws.Send(json);
+        }
+    }
+
+    public void UpdateConnectionStatus(string status, string url)
+    {
+        if (GameManager.Instance.websocketStatus != null)
+        {
+            GameManager.Instance.websocketStatus = status + " " + url;
         }
     }
 }
