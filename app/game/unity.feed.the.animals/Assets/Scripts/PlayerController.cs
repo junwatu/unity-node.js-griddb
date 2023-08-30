@@ -13,25 +13,29 @@ public class PlayerController : MonoBehaviour
 
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(transform.position.x < -xRange) {
-            transform.position = new Vector3(-xRange,transform.position.y, transform.position.z);
+        if (transform.position.x < -xRange)
+        {
+            transform.position = new Vector3(-xRange, transform.position.y, transform.position.z);
         }
 
-        if(transform.position.x > xRange){
+        if (transform.position.x > xRange)
+        {
             transform.position = new Vector3(xRange, transform.position.y, transform.position.z);
         }
         horizontalMove = Input.GetAxis("Horizontal");
         transform.Translate(Vector3.right * Time.deltaTime * horizontalMove * speed);
 
-        if(Input.GetKeyDown("space")) {
+        if (Input.GetKeyDown("space"))
+        {
             //Debug.Log("Space down");
             Instantiate(projectilePrefab, transform.position, projectilePrefab.transform.rotation);
+            GameManager.Instance.numberOfMeatThrows++;
         }
     }
 }

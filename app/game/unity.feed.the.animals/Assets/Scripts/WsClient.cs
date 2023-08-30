@@ -43,7 +43,20 @@ public class WsClient : MonoBehaviour
         }
         if (Input.GetKeyDown(KeyCode.Space))
         {
-            ws.Send("Hello");
+            ws.Send("Save Data...");
+            Dictionary<string, object> dataToSave = new Dictionary<string, object>();
+
+            //Add player position
+            Vector3 playerPosition = GameObject.Find("Player").transform.position;
+            dataToSave.Add("PlayerX", playerPosition.x);
+            dataToSave.Add("PlayerY", playerPosition.y);
+            dataToSave.Add("PlayerZ", playerPosition.z);
+
+            // Add other game data here (like number of thrown meat, last collided animal, etc.)
+
+            // Convert dictionary to JSON and send it
+            string json = JsonConvert.SerializeObject(dataToSave);
+            ws.Send(json);
         }
     }
 }
