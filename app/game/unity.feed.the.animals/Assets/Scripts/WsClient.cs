@@ -14,7 +14,17 @@ public class WsClient : MonoBehaviour
     {
         try
         {
-            string configPath = Path.Combine(Application.dataPath, "config.json").Replace("\\", "/");
+            string configPath;
+
+#if UNITY_EDITOR
+                // In development
+                configPath = Path.Combine(Application.dataPath, "config.json").Replace("\\", "/");
+            
+#else
+            // In production
+            configPath = Path.Combine(System.Environment.CurrentDirectory, "config.json").Replace("\\", "/");
+#endif
+
             Debug.Log("Config Path: " + configPath);
             string configJson = File.ReadAllText(configPath);
             Dictionary<string, string> configData = JsonConvert.DeserializeObject<Dictionary<string, string>>(configJson);
