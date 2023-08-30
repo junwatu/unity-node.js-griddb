@@ -6,7 +6,7 @@ In this post we will build a simple game called **Feed The Animals**. This game 
 
 ## Run the Project
 
-Clone the project [source code](https://github.com/junwatu/unity-node.js-griddb) from the GitHub repository. 
+Clone the project [source code](https://github.com/junwatu/unity-node.js-griddb) from the GitHub repository.
 
 ```shell
 git clone https://github.com/junwatu/unity-node.js-griddb.git
@@ -18,7 +18,7 @@ change the directory into the project source code
 cd unity-node.js-griddb
 ```
 
-Install the Node.js server dependencies
+Install the Node.js dependencies for the game server
 
 ```shell
 cd app\server
@@ -45,11 +45,20 @@ and then run or restart the game server.
 
 #### Windows Binary `.exe`
 
-This game build is running on the Windows OS machine. Go to the project source and go to the folder `app\game\unity.feed.the.animals\Build` then double click file with then name `feed.the.animals.exe`.
+This game build is running on the Windows OS machine. Please download the binary build on this link:
 
-There will be a game setting configuration window. You can choose other  **Screen resolution** and the **Graphics quality** or leave as it is.
+  [https://github.com/junwatu/unity-node.js-griddb/releases/download/demo/FeedTheAnimals.Windows-x64.zip](https://github.com/junwatu/unity-node.js-griddb/releases/download/demo/FeedTheAnimals.Windows-x64.zip). 
 
-![game settings start](images/game-start-setting.png)
+
+Then extract it and if you change the default game server address then you should change the IP address for the game too. Open `config.json` file then edit the `WebSocketURL`:
+
+```json
+{
+  "WebSocketURL": "http://192.168.0.11:9000"
+}
+```
+
+After that you can run the game by clicking `feed.the.animals.exe` file!
 
 The gameplay is simple, that is feed the animal and if you have failed to feed a few animals then you will loose, means game over!
 
@@ -170,7 +179,186 @@ After that you can open the game project source and assets in the Unity Editor.
 
 ### Node.js and WebSocket Integration
 
-[DRAFT]
+Integrate Node.js with WebSocket is easy using [`ws`](https://github.com/websockets/ws) npm package. This npm package is a simple to use, blazing fast, and thoroughly tested WebSocket client and server implementation and `ws` is only available on the server, means you cannot use it in the browser because the browser already have WebSocket implementation.
+
+#### Node.js HTTP Server
+
+This code sets up a basic HTTP and WebSocket server using Node.js and various Node.js packages. It also exposes some HTTP routes and connects to a database service to get game data:
+
+```js
+// app\server\index.js
+import express from 'express';
+import http from 'http';
+import cors from 'cors';
+import path from 'path';
+import 'dotenv/config';
+import url from 'url';
+
+import setupWebSocket from './websocket.js';
+import { __dirname } from './libs/dirname.js';
+import { getAllData } from "./griddbservice.js";
+import { createRequire } from 'module'; 
+
+const require = createRequire(import.meta.url); 
+const WebSocket = require('ws');
+
+const app = express();
+
+const parsedUrl = url.parse(process.env.GAME_SERVER_URL);
+const hostname = parsedUrl.hostname;
+const port = parsedUrl.port || 8080; 
+
+const server = http.createServer(app);
+
+const wss = new WebSocket.Server({ server });
+
+setupWebSocket(wss);
+
+const publicPath = path.resolve(`${__dirname}`, './public');
+
+app.use(express.static(publicPath));
+app.use(cors());
+
+app.get('/', (req, res) => {
+	res.send('Unity Game Server!');
+});
+
+
+app.get('/api/gamedata', async (req, res) => {
+	try {
+		const data = await getAllData();
+		res.json(data); 
+	} catch (err) {
+		console.error(err);
+		res.status(500).send('Internal Server Error');
+	}
+});
+
+server.listen(port, () => {
+	console.log(`HTTP and WebSocket server running on http://${hostname}:${port}`);
+});
+
+```
+
+The HTTP server will read `env` file and get the `GAME_SERVER_URL` environment variable first before the HTTP server run:
+
+```js
+const parsedUrl = url.parse(process.env.GAME_SERVER_URL);
+const hostname = parsedUrl.hostname;
+const port = parsedUrl.port || 8080;
+```
+
+The above code will parsed `GAME_SERVER_URL` and extract `hostname` and `port`. If you don't define the port in the `env` file then it will default to port `8080`.
+
+#### HTTP Routes
+
+The HTTP server also expose some routes on is the homepage and the other is to get the game data list:
+
+| HTTP Method | Route         | Description                            | Response Type      |
+|-------------|---------------|----------------------------------------|--------------------|
+| GET         | `/`           | Returns a simple text message          | Text: "Unity Game Server!"   |
+| GET         | `/api/gamedata`| Fetches game data from a service       | JSON or 500 Internal Server Error |
+
+Note: This table only covers HTTP routes and does not include WebSocket routes, which are set up by the `setupWebSocket(wss)` function but not detailed in the given code.
+
+
+#### WebSocket Server
+
+The WebSocket server is attached to the HTTP server so when the HTTP server is run the WebSocket server will run too:
+
+```js
+const wss = new WebSocket.Server({ server });
+
+setupWebSocket(wss);
+```
+
+The `setupWebSocket()` is the main function that handle the handle the connection between the game server and the Unity game. Let's see the code:
+
+```js
+import { saveData, getAllData } from './griddbservice.js';
+
+function setupWebSocket(wss) {
+	wss.on('connection', function connection(ws) {
+		ws.on('message', async (data) => {
+
+			let readableData;
+
+			// Check if the data is in JSON format
+			try {
+				readableData = JSON.parse(data.toString('utf8'));
+			} catch (e) {
+				console.log('Received data is not JSON. Ignoring...');
+				return;
+			}
+
+			// If data is of type "save", then save it
+			if (readableData.type === 'save') {
+				const playerposition = {
+					x: readableData.PlayerX,
+					y: readableData.PlayerY,
+					z: readableData.PlayerZ
+				};
+				const numberofthrows = readableData.NumberOfMeatThrows;
+				const gameover = false;
+
+				await saveData({ playerposition, numberofthrows, gameover });
+				ws.send(JSON.stringify(readableData))
+			} else if (readableData.type === 'getAll') {
+				const allData = await getAllData();
+				ws.send(JSON.stringify(allData));
+			}
+
+			console.log('data received \n %o', readableData);
+
+		});
+	});
+
+
+	wss.on('listening', () => {
+		console.log('WebSocket server is listening');
+	});
+};
+
+export default setupWebSocket;
+```
+
+When in connection state, WebSocket will listen the message from the Unity game. Because of the nature of WebSocket any data will be receive instantly from the Unity game (client). In this code we will accept JSON data only:
+
+```js
+try {
+    readableData = JSON.parse(data.toString('utf8'));
+} catch (e) {
+    console.log('Received data is not JSON. Ignoring...');
+return;
+}
+```
+
+The JSON data from the Unity game contents the last player movement and the number of meat throws.
+
+```js
+const playerposition = {
+		x: readableData.PlayerX,
+		y: readableData.PlayerY,
+		z: readableData.PlayerZ
+};
+const numberofthrows = readableData.NumberOfMeatThrows;
+```
+This data later will be saved to the GridDB database.
+
+### WebSocket Events
+
+| Event    | Message Type | Description                                                       | Response/Action         |
+|----------|-------------|--------------------------------------------------------------------|--------------------------|
+| on message | `save`    | Saves the player's position, and number of meat throws             | Echoes received JSON data|
+| on message | `getAll`  | Sends all saved game data to the client (future use)               | Sends all game data as JSON|
+| on listening | N/A      | Indicates WebSocket server is listening for incoming connections  | Logs a message to console|
+
+The `setupWebSocket` function hooks into the WebSocket server and listens for different types of events:
+
+- **`connection`**: Whenever a new WebSocket connection is established, it sets up the following message handlers:
+  - **`message`**: Listens for incoming messages. Depending on the `type` field in the message (`save` or `getAll`), it either saves the data or retrieves all saved game data, sending it back to the client.
+- **`listening`**: Logs that the WebSocket server is actively listening for incoming connections.
+
 
 ### Unity Meets WebSocket
 
