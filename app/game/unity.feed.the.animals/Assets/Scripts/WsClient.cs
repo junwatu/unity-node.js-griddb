@@ -53,6 +53,9 @@ public class WsClient : MonoBehaviour
             dataToSave.Add("PlayerZ", playerPosition.z);
 
             // Add other game data here (like number of thrown meat, last collided animal, etc.)
+            // Add other game data here
+            dataToSave.Add("NumberOfMeatThrows", GameManager.Instance.numberOfMeatThrows);
+
 
             // Convert dictionary to JSON and send it
             string json = JsonConvert.SerializeObject(dataToSave);
