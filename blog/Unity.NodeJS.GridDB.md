@@ -88,8 +88,6 @@ Node.js allows developers to create efficient and scalable backend services usin
 
 In real-time gaming, efficient data storage is crucial. GridDB is a highly scalable, available, and durable database system designed for this purpose. Its architecture is tailored for IoT use-cases, translating well into gaming, ensuring every player action is captured and stored with low latency.
 
-
-
 ### **WebSocket: Bridging Unity and Node.js in Real-time**
 
 In the fast-paced world of gaming, where every move and second is critical, traditional request-response communication models may not be sufficient. This is where the power of [WebSocket](https://en.wikipedia.org/wiki/WebSocket) comes in.
@@ -152,14 +150,15 @@ Jul 04 04:47:12 GenAI systemd[1]: Started GridDB database server..
 
 In this post we will use Windows OS for the Unity installation.
 
+> This installation is not mandatory because we don't talk about the game development from scratch here. If you want to dig dive into the Unity Editor and want to try the live development then please continue to install it.
+
 #### Unity Editor
 
-For this project we will use Unity 2022 LTS and to install it you need to install Unity Hub first. Please go here [Unity Hub](https://public-cdn.cloud.unity3d.com/hub/prod/UnityHubSetup.exe) to install it.
+For this project we will use Unity 2022 LTS and to install it you need to install Unity Hub first. Please go here [Unity Hub](https://public-cdn.cloud.unity3d.com/hub/prod/UnityHubSetup.exe) to install it. You have to install **Unity 2022.3.6f1** directly from Unity Hub for better project management.
+
 
 > **What is the Unity Hub?**
 > Use the Unity Hub to manage multiple installations of the Unity Editor, create new projects, and access your work.
-
-You have to install **Unity 2022.3.6f1** directly from Unity Hub for better project management.
 
 ![Unity Hub](images/unity-hub.png)
 
@@ -186,7 +185,7 @@ Integrate Node.js with WebSocket is easy using [`ws`](https://github.com/websock
 This code sets up a basic HTTP and WebSocket server using Node.js and various Node.js packages. It also exposes some HTTP routes and connects to a database service to get game data:
 
 ```js
-// app\server\index.js
+// index.js
 import express from 'express';
 import http from 'http';
 import cors from 'cors';
@@ -275,6 +274,7 @@ setupWebSocket(wss);
 The `setupWebSocket()` is the main function that handle the handle the connection between the game server and the Unity game. Let's see the code:
 
 ```js
+// websocket.js
 import { saveData, getAllData } from './griddbservice.js';
 
 function setupWebSocket(wss) {
@@ -359,14 +359,60 @@ The `setupWebSocket` function hooks into the WebSocket server and listens for di
   - **`message`**: Listens for incoming messages. Depending on the `type` field in the message (`save` or `getAll`), it either saves the data or retrieves all saved game data, sending it back to the client.
 - **`listening`**: Logs that the WebSocket server is actively listening for incoming connections.
 
+### Storing Game Progress
+
+To store the game data to GridDB database is very easy. In the WebSocket server code we use two method `saveData()` and `getAllData()`
+
+```js
+import { saveData, getAllData } from './griddbservice.js';
+```
+The `griddbservice.js` is GridDB service file that handles the logic related to database operations. This makes it easier to update the database logic and to make the CRUD operations with GridDB more modular.
+
+```js
+// griddbservice.js
+import * as GridDB from './libs/griddb.cjs';
+import { generateRandomID } from './libs/rangen.js';
+
+const { collectionDb, store, conInfo, containerName } = await GridDB.initGridDbTS();
+
+export async function saveData({ playerposition, numberofthrows, gameover }) {
+	const id = generateRandomID();
+
+	// Serialize player position to a JSON string (if needed)
+	const playerpositionStr = JSON.stringify(playerposition);
+	const numberofthrowsStr = String(numberofthrows);
+	const gameoverStr = String(gameover);
+
+	// Now you can safely insert them into the database as strings
+	const playerState = [parseInt(id), playerpositionStr, numberofthrowsStr, gameoverStr];
+	const saveStatus = await GridDB.insert(playerState, collectionDb);
+	return saveStatus;
+}
+
+export async function getAllData() {
+	return await GridDB.queryAll(conInfo, store);
+}
+```
+
+The game data is saved using the `saveData()` function. This function have signature
+
+```js
+async function saveData({ playerposition, numberofthrows, gameover })
+```
+
+The `saveData()` function will save 3 game data: `playerposition`, `numberofthrows`, and `gameover` into the GridDB database.
+
+The `getAllData()` will return all the game data that is saved in the GridDB database. You can get this data via browser with running the HTTP server URL:
+
+```shell
+http://localhost:8080/api/gamedata
+```
+Please note if you change the HTTP URL server in the `env` file than the above URL will change too.
 
 ### Unity Meets WebSocket
 
-[DRAFT]
 
-### Storing Game Progress
 
-[DRAFT]
 
 - Storing and retrieving data from GridDB using Node.js.
 - Summarizing the complete flow from game event in Unity to data storage in GridDB.
