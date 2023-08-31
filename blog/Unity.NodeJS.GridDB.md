@@ -156,9 +156,8 @@ In this post we will use Windows OS for the Unity installation.
 
 For this project we will use Unity 2022 LTS and to install it you need to install Unity Hub first. Please go here [Unity Hub](https://public-cdn.cloud.unity3d.com/hub/prod/UnityHubSetup.exe) to install it. You have to install **Unity 2022.3.6f1** directly from Unity Hub for better project management.
 
-
 > **What is the Unity Hub?**
-> Use the Unity Hub to manage multiple installations of the Unity Editor, create new projects, and access your work.
+> Unity Hub is used to manage multiple installations of the Unity Editor, create new projects, and access your work.
 
 ![Unity Hub](images/unity-hub.png)
 
@@ -411,12 +410,84 @@ Please note if you change the HTTP URL server in the `env` file than the above U
 
 ### Unity Meets WebSocket
 
+#### WebSocket NuGet
 
+Unity doesn't support WebSocket natively and to solved this problem we will use WebSocket package from NuGet. As you know that Unity use C#, a different language compare to our Node.js server that use JavaScript. 
 
+> **What is NuGet?**  
+> NuGet is the package manager for .NET. The NuGet client tools provide the ability to produce and consume packages. The NuGet Gallery is the central package repository used by all package authors and consumers.
 
-- Storing and retrieving data from GridDB using Node.js.
-- Summarizing the complete flow from game event in Unity to data storage in GridDB.
+For better package management in this project we have use [NuGetForUnity](https://github.com/GlitchEnzo/NuGetForUnity). The Unity package can be installed from this [link](https://github.com/GlitchEnzo/NuGetForUnity/releases).
 
-## Conclusion
+> **NuGetForUnity** is a NuGet client built from scratch to run inside the Unity Editor. NuGet is a package management system which makes it easy to create packages that are distributed on a server and consumed by users.
 
-[DRAFT]
+The WebSocket package that we use for this project is the `WebSocketSharp-netstandard` package.
+
+![nuget unity](images/nuget-unity.png)
+
+#### WebSocket Client
+
+This code initializes a WebSocket client when a game starts, and then, during the game, sends data to the WebSocket server when the player hits the Spacebar. This data includes information about the player's position in the game world and a game-specific metric called `NumberOfMeatThrows`:
+
+```cs
+// WsClient.cs
+public class WsClient : MonoBehaviour
+{
+    WebSocket ws;
+
+    void Start()
+    {
+      //...
+    }
+
+    void Update()
+    {
+        if (ws == null)
+        {
+            return;
+        }
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
+            ws.Send("Save Data...");
+            Dictionary<string, object> dataToSave = new Dictionary<string, object>();
+
+            //Add player position
+            Vector3 playerPosition = GameObject.Find("Player").transform.position;
+            dataToSave.Add("PlayerX", playerPosition.x);
+            dataToSave.Add("PlayerY", playerPosition.y);
+            dataToSave.Add("PlayerZ", playerPosition.z);
+            dataToSave.Add("NumberOfMeatThrows", GameManager.Instance.numberOfMeatThrows);
+            dataToSave.Add("type", "save");
+
+            // Convert dictionary to JSON and send it
+            string json = JsonConvert.SerializeObject(dataToSave);
+            ws.Send(json);
+        }
+    }
+}
+
+```
+
+**Game Loop: Update() Method**
+
+This method gets called once per frame, allowing for real-time interaction. If the WebSocket client `ws` is not initialized, the method simply returns without doing anything.
+
+It checks if the **Spacebar** key is pressed. If pressed, it gathers some data and sends it to the WebSocket server:
+
+- The position of a GameObject named **Player** is stored in a dictionary.
+- The number of "meat throws", is also stored.
+- This dictionary data is then converted to a JSON string and sent to the game server via WebSocket.
+
+### Game Structure
+
+The **Feed the Animals** game architecture generally can be describe it as this diagram. In this diagram, the **WebSocket (WsClient)** component is sending out various data points:
+
+- **PlayerX, PlayerY, PlayerZ**: The position of the player, which is probably gathered from the PlayerController.
+
+- **NumberOfMeatThrows**: This is directly read from GameManager.
+
+These data points are serialized as a JSON and then sent through the WebSocket connection.
+
+![game arch](images/game-architecture.png)
+
+Iy you want to dig deeper on the codes please look into the project source code.
