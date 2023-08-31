@@ -478,7 +478,7 @@ It checks if the **Spacebar** key is pressed. If pressed, it gathers some data a
 - The number of "meat throws", is also stored.
 - This dictionary data is then converted to a JSON string and sent to the game server via WebSocket.
 
-### Game Structure
+### Game Architecture
 
 The **Feed the Animals** game architecture generally can be describe it as this diagram. In this diagram, the **WebSocket (WsClient)** component is sending out various data points:
 
