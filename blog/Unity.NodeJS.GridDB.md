@@ -408,6 +408,18 @@ http://localhost:8080/api/gamedata
 ```
 Please note if you change the HTTP URL server in the `env` file than the above URL will change too.
 
+### Game Architecture
+
+![game arch](images/game-architecture.png)
+
+The **Feed the Animals** game architecture generally can be describe it as this diagram. In this diagram, the **WebSocket (WsClient)** component is sending out various data points:
+
+- **PlayerX, PlayerY, PlayerZ**: The position of the player, which is probably gathered from the PlayerController.
+
+- **NumberOfMeatThrows**: This is directly read from GameManager.
+
+These data points are serialized as a JSON and then sent through the WebSocket connection.
+
 ### Unity Meets WebSocket
 
 #### WebSocket NuGet
@@ -477,17 +489,3 @@ It checks if the **Spacebar** key is pressed. If pressed, it gathers some data a
 - The position of a GameObject named **Player** is stored in a dictionary.
 - The number of "meat throws", is also stored.
 - This dictionary data is then converted to a JSON string and sent to the game server via WebSocket.
-
-### Game Architecture
-
-The **Feed the Animals** game architecture generally can be describe it as this diagram. In this diagram, the **WebSocket (WsClient)** component is sending out various data points:
-
-- **PlayerX, PlayerY, PlayerZ**: The position of the player, which is probably gathered from the PlayerController.
-
-- **NumberOfMeatThrows**: This is directly read from GameManager.
-
-These data points are serialized as a JSON and then sent through the WebSocket connection.
-
-![game arch](images/game-architecture.png)
-
-Iy you want to dig deeper on the codes please look into the project source code.
